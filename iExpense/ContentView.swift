@@ -14,20 +14,52 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(expenses.items) { item in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                            Text(item.type)
+                Section("Personal") {
+                    ForEach(expenses.items) { item in
+                        if isPersonal(type: item.type) {
+                            ZStack {
+                                LinearGradient(gradient: Gradient(colors: [determineBackgronudColor(cost: item.amount), .white]), startPoint: .trailing, endPoint: .leading)
+                                
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(item.name)
+                                            .font(.headline)
+                                        Text(item.type)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Text(item.amount, format: .currency(code: "USD"))
+                                }
+                            }
                         }
-                        
-                        Spacer()
-                        
-                        Text(item.amount, format: .currency(code: "USD"))
                     }
+                    .onDelete(perform: removeItems)
                 }
-                .onDelete(perform: removeItems)
+                
+                Section("Business") {
+                    ForEach(expenses.items) { item in
+                        if !isPersonal(type: item.type) {
+                            ZStack {
+                                LinearGradient(gradient: Gradient(colors: [determineBackgronudColor(cost: item.amount), .white]), startPoint: .trailing, endPoint: .leading)
+                                
+                                HStack {
+                                    VStack(alignment: .leading) {
+                                        Text(item.name)
+                                            .font(.headline)
+                                        Text(item.type)
+                                    }
+                                    
+                                    Spacer()
+                                    
+                                    Text(item.amount, format: .currency(code: "USD"))
+                                }
+                            }
+                        }
+                    }
+                    .onDelete(perform: removeItems)
+                }
+                
             }
             .navigationBarTitle("iExpense")
             .toolbar {
@@ -40,6 +72,24 @@ struct ContentView: View {
             .sheet(isPresented: $showingAddExpense) {
                 AddView(expenses: expenses)
             }
+        }
+    }
+    
+    func isPersonal(type: String) -> Bool {
+        if type == "Personal" {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func determineBackgronudColor(cost: Double) -> Color {
+        if cost <= 10.0 {
+            return Color.green
+        } else if cost <= 100.0 {
+            return Color.yellow
+        } else {
+            return Color.red
         }
     }
     

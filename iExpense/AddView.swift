@@ -14,8 +14,10 @@ struct AddView: View {
     @State private var name = ""
     @State private var type = "Personal"
     @State private var amount = 0.0
+    @State private var selectedCurrency = "USD"
     
     let types = ["Business", "Personal"]
+    let currencies = ["AUD", "BRL","CAD","CNY","EUR","GBP","HKD","IDR","ILS","INR","JPY","MXN","NOK","NZD","PLN","RON","RUB","SEK","SGD","USD","ZAR"]
     
     var body: some View {
         NavigationView {
@@ -28,7 +30,13 @@ struct AddView: View {
                     }
                 }
                 
-                TextField("Amount", value: $amount, format: .currency(code: "USD"))
+                Picker("Currency", selection: $selectedCurrency) {
+                    ForEach(currencies, id: \.self) {
+                        Text($0)
+                    }
+                }
+                
+                TextField("Amount", value: $amount, format: .currency(code: selectedCurrency))
                     .keyboardType(.decimalPad)
             }
             .navigationTitle("Add new expense")
