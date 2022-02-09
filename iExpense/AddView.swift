@@ -38,6 +38,8 @@ struct AddView: View {
                 
                 TextField("Amount", value: $amount, format: .currency(code: selectedCurrency))
                     .keyboardType(.decimalPad)
+                    .id(selectedCurrency)
+                //using id modifier to rerender Textfield b/c it wont when selectedCurrency is changed becuase it isn't a dependency
             }
             .navigationTitle("Add new expense")
             .toolbar {
